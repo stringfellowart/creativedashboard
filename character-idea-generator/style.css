@@ -10,16 +10,15 @@ body {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #f8f1e9; /* Warm beige background */
-    color: #3a2e2e; /* Dark brown text */
+    background-color: #f8f1e9;
+    color: #3a2e2e;
     line-height: 1.6;
-    /* Removed background-image: (background.pmg) as it seems incomplete/invalid */
 }
 
 h1, h3 {
     font-family: 'Playfair Display', serif;
     text-align: center;
-    color: #5a4032; /* Slightly darker brown */
+    color: #5a4032;
     font-weight: 700;
 }
 
@@ -42,7 +41,7 @@ h3 {
 input, button {
     padding: 12px;
     font-size: 1rem;
-    border: 1px solid #e0d8cf; /* Subtle beige border */
+    border: 1px solid #e0d8cf;
     border-radius: 5px;
     font-family: 'Roboto', sans-serif;
 }
@@ -53,7 +52,7 @@ input {
 }
 
 button {
-    background-color: #5a4032; /* Earthy brown button */
+    background-color: #5a4032;
     color: #fff;
     cursor: pointer;
     border: none;
@@ -61,7 +60,7 @@ button {
 }
 
 button:hover {
-    background-color: #4a3326; /* Darker brown on hover */
+    background-color: #4a3326;
 }
 
 #output {
@@ -81,7 +80,7 @@ button:hover {
     text-align: center;
     font-size: 1rem;
     margin: 30px 0;
-    color: #6a4e3e; /* Softer brown for secondary text */
+    color: #6a4e3e;
     font-family: 'Roboto', sans-serif;
 }
 
@@ -89,6 +88,7 @@ button:hover {
     margin-top: 30px;
     text-align: center;
 }
+
 #savedPrompts {
     width: 100%;
     max-width: 600px;
@@ -100,31 +100,6 @@ button:hover {
     background-color: #fff;
     color: #3a2e2e;
     resize: vertical;
-}
-
-/* New styles for image generation */
-.generate-img-btn {
-    margin-top: 10px;
-    padding: 8px 16px;
-    background-color: #5a4032;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: 'Roboto', sans-serif;
-    font-size: 0.9rem;
-    transition: background-color 0.3s ease;
-}
-
-.generate-img-btn:hover {
-    background-color: #4a3326;
-}
-
-.generated-img {
-    margin-top: 10px;
-    max-width: 200px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 /* Responsive Design */
