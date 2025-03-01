@@ -1,10 +1,10 @@
 async function loadData() {
-    const basePath = '/Characterprompt'; // Matches your GitHub Pages URL
+    const basePath = '/Characterprompt';
     try {
         const subjectsResponse = await fetch(`${basePath}/subjects.json`);
         if (!subjectsResponse.ok) throw new Error(`Subjects fetch failed: ${subjectsResponse.status}`);
         const descriptorsResponse = await fetch(`${basePath}/descriptors.json`);
-        if (!descriptorsResponse.ok) throw new Error(`Descriptors fetch failed: ${subjectsResponse.status}`);
+        if (!descriptorsResponse.ok) throw new Error(`Descriptors fetch failed: ${descriptorsResponse.status}`);
         const subjectsData = await subjectsResponse.json();
         const descriptorsData = await descriptorsResponse.json();
         console.log('Subjects:', subjectsData.subjects);
@@ -20,9 +20,9 @@ async function loadData() {
 }
 
 async function generatePrompts() {
-    const count = parseInt(document.getElementById("count").value) || 1; // Default to 1 if empty
+    const count = parseInt(document.getElementById("count").value) || 1;
     const output = document.getElementById("output");
-    output.innerHTML = ""; // Clear previous list
+    output.innerHTML = "";
 
     if (count < 1 || count > 100) {
         output.innerHTML = "<li>Please enter a number between 1 and 100.</li>";
@@ -35,23 +35,21 @@ async function generatePrompts() {
         return;
     }
 
-    const usedSubjects = new Map(); // Track subject usage
-    const usedDescriptors = new Map(); // Track descriptor usage
-    const maxRepeats = 2; // Max times any subject or descriptor can appear
+    const usedSubjects = new Map();
+    const usedDescriptors = new Map();
+    const maxRepeats = 2;
     const prompts = [];
 
     for (let i = 0; i < count; i++) {
         let subject, descriptor, attempts = 0;
-        const maxAttempts = 10; // Prevent infinite loops
+        const maxAttempts = 10;
 
-        // Pick a subject with limited repeats
         do {
             subject = data.subjects[Math.floor(Math.random() * data.subjects.length)];
             attempts++;
         } while (usedSubjects.get(subject) >= maxRepeats && attempts < maxAttempts);
         usedSubjects.set(subject, (usedSubjects.get(subject) || 0) + 1);
 
-        // Pick a descriptor with limited repeats
         attempts = 0;
         do {
             descriptor = data.descriptors[Math.floor(Math.random() * data.descriptors.length)];
@@ -59,22 +57,60 @@ async function generatePrompts() {
         } while (usedDescriptors.get(descriptor) >= maxRepeats && attempts < maxAttempts);
         usedDescriptors.set(descriptor, (usedDescriptors.get(descriptor) || 0) + 1);
 
-        // Capitalize the first letter of the subject
         const capitalizedSubject = subject.charAt(0).toUpperCase() + subject.slice(1);
         const prompt = `Day ${i + 1}: ${capitalizedSubject} ${descriptor}`;
         prompts.push(prompt);
     }
 
-    // Display prompts in the list
     prompts.forEach(prompt => {
         const li = document.createElement("li");
-        li.textContent = prompt;
+        const promptText = document.createElement("span");
+        promptText.textContent = prompt;
+        li.appendChild(promptText);
+
+        const imgBtn = document.createElement("button");
+        imgBtn.textContent = "Generate Image";
+        imgBtn.className = "generate-img-btn";
+        imgBtn.onclick = () => generateImage(prompt.replace(/^Day \d+: /, ""), li);
+        li.appendChild(imgBtn);
+
         output.appendChild(li);
     });
 
-    // Log usage for debugging
     console.log('Used Subjects:', Object.fromEntries(usedSubjects));
     console.log('Used Descriptors:', Object.fromEntries(usedDescriptors));
+}
+
+async function generateImage(prompt, listItem) {
+    try {
+        const response = await fetch("https://api.craiyon.com/v3", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                prompt: prompt,
+                version: "cxl46z3gyma01ch18hln9hvg2",
+                token: null
+            })
+        });
+
+        if (!response.ok) throw new Error(`Craiyon API failed: ${response.status}`);
+        const data = await response.json();
+        const firstImageUrl = `https://pics.craiyon.com/${data.images[0].url}`;
+
+        const img = document.createElement("img");
+        img.src = firstImageUrl;
+        img.className = "generated-img";
+        img.alt = `AI-generated image for: ${prompt}`;
+        listItem.appendChild(img);
+    } catch (error) {
+        console.error('Error generating image:', error);
+        const errorMsg = document.createElement("p");
+        errorMsg.textContent = "Failed to generate image.";
+        errorMsg.style.color = "#8b2e2e";
+        listItem.appendChild(errorMsg);
+    }
 }
 
 function exportToTxt() {
