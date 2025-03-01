@@ -13,6 +13,23 @@ body {
     background-color: #f8f1e9;
     color: #3a2e2e;
     line-height: 1.6;
+    position: relative; /* For dashboard link positioning */
+}
+
+.dashboard-link {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.9rem;
+    color: #5a4032;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.dashboard-link:hover {
+    color: #4a3326;
+    text-decoration: underline;
 }
 
 h1, h3 {
@@ -65,7 +82,7 @@ button:hover {
 
 #output {
     background: #fff;
-    padding: 20px;
+    padding: 20px 20px 20px 40px; /* Increased left padding for bullet spacing */
     border-radius: 5px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
@@ -119,5 +136,10 @@ button:hover {
     }
     #output li {
         font-size: 1rem;
+    }
+    .dashboard-link {
+        font-size: 0.8rem;
+        top: 10px;
+        left: 10px;
     }
 }
