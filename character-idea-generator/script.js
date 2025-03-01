@@ -64,53 +64,12 @@ async function generatePrompts() {
 
     prompts.forEach(prompt => {
         const li = document.createElement("li");
-        const promptText = document.createElement("span");
-        promptText.textContent = prompt;
-        li.appendChild(promptText);
-
-        const imgBtn = document.createElement("button");
-        imgBtn.textContent = "Generate Image";
-        imgBtn.className = "generate-img-btn";
-        imgBtn.onclick = () => generateImage(prompt.replace(/^Day \d+: /, ""), li);
-        li.appendChild(imgBtn);
-
+        li.textContent = prompt;
         output.appendChild(li);
     });
 
     console.log('Used Subjects:', Object.fromEntries(usedSubjects));
     console.log('Used Descriptors:', Object.fromEntries(usedDescriptors));
-}
-
-async function generateImage(prompt, listItem) {
-    try {
-        const response = await fetch("https://api.craiyon.com/v3", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                prompt: prompt,
-                version: "cxl46z3gyma01ch18hln9hvg2",
-                token: null
-            })
-        });
-
-        if (!response.ok) throw new Error(`Craiyon API failed: ${response.status}`);
-        const data = await response.json();
-        const firstImageUrl = `https://pics.craiyon.com/${data.images[0].url}`;
-
-        const img = document.createElement("img");
-        img.src = firstImageUrl;
-        img.className = "generated-img";
-        img.alt = `AI-generated image for: ${prompt}`;
-        listItem.appendChild(img);
-    } catch (error) {
-        console.error('Error generating image:', error);
-        const errorMsg = document.createElement("p");
-        errorMsg.textContent = "Failed to generate image.";
-        errorMsg.style.color = "#8b2e2e";
-        listItem.appendChild(errorMsg);
-    }
 }
 
 function exportToTxt() {
