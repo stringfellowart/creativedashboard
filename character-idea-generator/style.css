@@ -11,6 +11,7 @@ body {
     margin: 0 auto;
     padding: 20px;
     background-color: #f8f1e9;
+    background-image: url('whimsical.png');
     color: #3a2e2e;
     line-height: 1.6;
     position: relative; /* For dashboard link positioning */
