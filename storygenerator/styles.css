@@ -12,7 +12,7 @@ body {
     margin: 0;
     padding: 20px;
     line-height: 1.6;
-    /* Optional: Uncomment and adjust if you want to keep the background image */
+    /* Uncomment and adjust if using leaves-background.png */
     /* background-image: url('leaves-background.png'); */
     /* background-position: center; */
 }
@@ -50,7 +50,7 @@ h3 {
     text-align: center;
     border: 1px solid #e0d8cf; /* Subtle beige border */
     transition: all 0.3s ease;
-    /* Optional: Uncomment if you want to keep the card background */
+    /* Uncomment and adjust if using card-background.png */
     /* background-image: url('card-background.png'); */
     /* background-size: cover; */
 }
@@ -112,12 +112,12 @@ select, button {
     border-radius: 5px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     text-align: center;
-    font-family: 'Playfair Display', serif; /* Switched from Delicious Handrawn for consistency */
+    font-family: 'Playfair Display', serif;
     font-size: 1.25rem;
     color: #3a2e2e;
     border: 1px solid #e0d8cf;
-    /* Optional: Uncomment if you want to keep the background */
-    /* background-image: url('Assets/card-background.png'); */
+    /* Uncomment and adjust if using card-background.png */
+    /* background-image: url('card-background.png'); */
 }
 
 .save-area {
