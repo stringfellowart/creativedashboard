@@ -2,28 +2,57 @@ let cardCount = 0;
 const cardsContainer = document.getElementById('cardsContainer');
 let promptData = {};
 
-// Load data from JSON files
+// Load data from JSON files with detailed error logging
 async function loadData() {
     try {
-        const [actors, modifiers, motivators, elements, conflicts] = await Promise.all([
-            fetch('actors.json').then(res => res.json()),
-            fetch('modifiers.json').then(res => res.json()),
-            fetch('motivators.json').then(res => res.json()),
-            fetch('elements.json').then(res => res.json()),
-            fetch('conflicts.json').then(res => res.json())
-        ]);
+        const fetches = [
+            fetch('actors.json').then(res => {
+                if (!res.ok) throw new Error(`Failed to fetch actors.json: ${res.status}`);
+                return res.json();
+            }),
+            fetch('modifiers.json').then(res => {
+                if (!res.ok) throw new Error(`Failed to fetch modifiers.json: ${res.status}`);
+                return res.json();
+            }),
+            fetch('motivators.json').then(res => {
+                if (!res.ok) throw new Error(`Failed to fetch motivators.json: ${res.status}`);
+                return res.json();
+            }),
+            fetch('characters.json').then(res => {
+                if (!res.ok) throw new Error(`Failed to fetch characters.json: ${res.status}`);
+                return res.json();
+            }),
+            fetch('places.json').then(res => {
+                if (!res.ok) throw new Error(`Failed to fetch places.json: ${res.status}`);
+                return res.json();
+            }),
+            fetch('things.json').then(res => {
+                if (!res.ok) throw new Error(`Failed to fetch things.json: ${res.status}`);
+                return res.json();
+            }),
+            fetch('conflicts.json').then(res => {
+                if (!res.ok) throw new Error(`Failed to fetch conflicts.json: ${res.status}`);
+                return res.json();
+            })
+        ];
+        const [actors, modifiers, motivators, characters, places, things, conflicts] = await Promise.all(fetches);
         promptData = {
             "Actor": actors,
             "Actor Modifier": modifiers,
             "Motivator": motivators,
-            "Element": elements,
-            "Element Modifier": modifiers,
+            "Character": characters,
+            "Character Modifier": modifiers,
+            "Place": places,
+            "Place Modifier": modifiers,
+            "Thing": things,
+            "Thing Modifier": modifiers,
             "Conflict": conflicts
         };
+        console.log('Data loaded successfully:', Object.keys(promptData));
         initializeCards();
     } catch (error) {
-        console.error('Error loading JSON files:', error);
-        document.getElementById('promptOutput').innerText = "Error loading prompt data. Check console.";
+        console.error('Error loading prompt data:', error);
+        document.getElementById('promptOutput').innerText = "Error loading prompt data: " + error.message;
     }
 }
 
@@ -44,11 +73,15 @@ function addCard(type = null) {
             <option value="Actor">Actor</option>
             <option value="Actor Modifier">Actor Modifier</option>
             <option value="Motivator">Motivator</option>
-            <option value="Element">Element</option>
-            <option value="Element Modifier">Element Modifier</option>
+            <option value="Character">Character</option>
+            <option value="Character Modifier">Character Modifier</option>
+            <option value="Place">Place</option>
+            <option value="Place Modifier">Place Modifier</option>
+            <option value="Thing">Thing</option>
+            <option value="Thing Modifier">Thing Modifier</option>
             <option value="Conflict">Conflict</option>
         </select>
-        <button onclick="generateCardPrompt('${cardId}')">Try again</button>
+        <button onclick="generateCardPrompt('${cardId}')">Pick another card</button>
         <button class="remove-btn" onclick="removeCard('${cardId}')">X</button>
         <p id="result-${cardId}"></p>
     `;
@@ -81,7 +114,10 @@ function generateCardPrompt(cardId) {
     const card = document.getElementById(cardId);
     const select = card.querySelector('select');
     const type = select.value;
-    if (!promptData[type]) return;
+    if (!promptData[type] || !promptData[type].length) {
+        console.warn(`No data available for ${type}`);
+        return;
+    }
     const items = promptData[type];
     const item = items[Math.floor(Math.random() * items.length)];
     const resultP = card.querySelector('p');
@@ -107,12 +143,12 @@ function generatePrompt() {
     const cards = Array.from(cardsContainer.getElementsByClassName('card'));
     let actorPhrases = [];
     let currentActorModifiers = [];
-    let motivatorElementPairs = [];
-    let currentElementModifiers = [];
+    let motivatorTargetPairs = [];
+    let currentTargetModifiers = [];
     let currentMotivator = null;
-    let conflicts = [];
+    let lastTargetType = null;
+    let conflicts = []; // Explicitly defined here
 
-    // Process cards in order
     cards.forEach(card => {
         const select = card.querySelector('select');
         const type = select.value;
@@ -130,44 +166,50 @@ function generatePrompt() {
             currentActorModifiers = [];
         } else if (type === "Motivator") {
             if (currentMotivator) {
-                // If there's a pending motivator without an element, pair it with a default
-                motivatorElementPairs.push(`${currentMotivator} something`);
+                motivatorTargetPairs.push(`${currentMotivator} something`);
             }
             currentMotivator = item;
-        } else if (type === "Element Modifier") {
-            currentElementModifiers.push(item);
-        } else if (type === "Element") {
-            const firstElementWord = currentElementModifiers.length > 0 ? currentElementModifiers[0] : item;
-            const elementArticle = getArticle(firstElementWord);
-            const elementPhrase = `${elementArticle} ${currentElementModifiers.join(' ')} ${item}`.trim();
+        } else if (type === "Character Modifier" || type === "Place Modifier" || type === "Thing Modifier") {
+            currentTargetModifiers.push(item);
+        } else if (type === "Character" || type === "Place" || type === "Thing") {
+            const firstTargetWord = currentTargetModifiers.length > 0 ? currentTargetModifiers[0] : item;
+            const targetArticle = getArticle(firstTargetWord);
+            const targetPhrase = `${targetArticle} ${currentTargetModifiers.join(' ')} ${item}`.trim();
+
             if (currentMotivator) {
-                motivatorElementPairs.push(`${currentMotivator} ${elementPhrase}`);
+                if (lastTargetType === "Character" && type === "Character") {
+                    const lastPairIndex = motivatorTargetPairs.length - 1;
+                    if (lastPairIndex >= 0) {
+                        motivatorTargetPairs[lastPairIndex] += ` with ${targetPhrase}`;
+                    } else {
+                        motivatorTargetPairs.push(`${currentMotivator} ${targetPhrase}`);
+                    }
+                } else {
+                    motivatorTargetPairs.push(`${currentMotivator} ${targetPhrase}`);
+                }
                 currentMotivator = null;
             } else {
-                motivatorElementPairs.push(`does something with ${elementPhrase}`);
+                motivatorTargetPairs.push(`does something with ${targetPhrase}`);
             }
-            currentElementModifiers = [];
+            currentTargetModifiers = [];
+            lastTargetType = type;
         } else if (type === "Conflict") {
             conflicts.push(item);
         }
     });
 
-    // Handle any unpaired motivator at the end
     if (currentMotivator) {
-        motivatorElementPairs.push(`${currentMotivator} something`);
+        motivatorTargetPairs.push(`${currentMotivator} something`);
     }
 
-    // Construct the sentence
     const actorsText = actorPhrases.length > 0 ? actorPhrases.join(' and ') : 'someone';
-    const motivatorText = motivatorElementPairs.length > 0 
-        ? motivatorElementPairs.join(', who ') 
+    const motivatorText = motivatorTargetPairs.length > 0 
+        ? motivatorTargetPairs.join(', who ') 
         : 'does something';
     const conflictsText = conflicts.length > 0 ? `but ${conflicts.join(' and ')}` : 'but faces an obstacle';
     const prompt = `${actorsText} ${motivatorText}, ${conflictsText}.`;
 
-    // Capitalize the first letter
     const capitalizedPrompt = prompt.charAt(0).toUpperCase() + prompt.slice(1);
-    
     document.getElementById('promptOutput').innerText = capitalizedPrompt;
 }
 
@@ -176,7 +218,7 @@ function generateStandardPrompt() {
     const cards = Array.from(cardsContainer.getElementsByClassName('card'));
     if (cards.length <= 5) {
         cardsContainer.innerHTML = '';
-        const initialTypes = ['Actor Modifier', 'Actor', 'Motivator', 'Element', 'Conflict'];
+        const initialTypes = ['Actor Modifier', 'Actor', 'Motivator', 'Thing', 'Conflict'];
         initialTypes.forEach((type, index) => {
             const card = addCard(type);
             cardsContainer.appendChild(card);
@@ -204,7 +246,11 @@ function exportToTxt() {
 
 // Initialize after data load
 function initializeCards() {
-    const initialTypes = ['Actor Modifier', 'Actor', 'Motivator', 'Element', 'Conflict'];
+    if (Object.keys(promptData).length === 0) {
+        console.warn('Prompt data not loaded yet, delaying initialization');
+        return;
+    }
+    const initialTypes = ['Actor Modifier', 'Actor', 'Motivator', 'Thing', 'Conflict'];
     initialTypes.forEach((type, index) => {
         const card = addCard(type);
         cardsContainer.appendChild(card);
