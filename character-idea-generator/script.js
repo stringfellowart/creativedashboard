@@ -8,7 +8,7 @@ async function loadData() {
         const subjectsData = await subjectsResponse.json();
         const descriptorsData = await descriptorsResponse.json();
         console.log('Subjects:', subjectsData.subjects);
-        console.log('Descriptors:', descriptorsData.descriptors);
+        console.log('Descriptors:', subjectsData.descriptors);
         return {
             subjects: subjectsData.subjects,
             descriptors: descriptorsData.descriptors
