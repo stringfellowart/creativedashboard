@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Prompt Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="generatePrompts()">
+    <h1>Character Prompt Generator</h1>
+    <div class="input-container">
+        <input type="number" id="count" min="1" max="100" value="1" placeholder="Enter number (1-100)" onkeypress="if(event.key === 'Enter') generatePrompts()">
+        <button onclick="generatePrompts()">Generate</button>
+    </div>
+    <ul id="output"></ul>
+    <p class="explanation">Use this list to create any kind of illustration/drawing/painting/story based on the daily prompt.</p>
+    <div class="save-area">
+        <h3>Save Your Favorite Prompts</h3>
+        <textarea id="savedPrompts" rows="5" cols="50" placeholder="Paste or type prompts here..."></textarea>
+        <br>
+        <button type="button" onclick="exportToTxt()">Export to TXT</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
