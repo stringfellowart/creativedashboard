@@ -9,14 +9,14 @@
 </head>
 <body onload="generatePrompts()">
     <a href="https://stringfellowart.github.io/creativedashboard/" class="dashboard-link">Return to Dashboard</a>
-    <h1>Character Illustration Idea Generator</h1>
-    <p class="explanation">Use this generator to create a list of daily prompts that you can use to create drawing, painting, or stories.</p>
+    <h1>Character Prompt Generator</h1>
     <div class="input-container">
         <input type="number" id="count" min="1" max="100" value="1" placeholder="Enter number (1-100)" onkeypress="if(event.key === 'Enter') generatePrompts()">
         <button onclick="generatePrompts()">Generate</button>
     </div>
     <ul id="output"></ul>
-        <div class="save-area">
+    <p class="explanation">Use this list to create any kind of illustration/drawing/painting/story based on the daily prompt.</p>
+    <div class="save-area">
         <h3>Save Your Favorite Prompts</h3>
         <textarea id="savedPrompts" rows="5" cols="50" placeholder="Paste or type prompts here..."></textarea>
         <br>
