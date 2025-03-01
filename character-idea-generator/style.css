@@ -1,62 +1,128 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Roboto', sans-serif;
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #f5f5f5;
-    background-image: (background.pmg);
-    color: #333;
+    background-color: #f8f1e9; /* Warm beige background */
+    color: #3a2e2e; /* Dark brown text */
+    line-height: 1.6;
+    /* Removed background-image: (background.pmg) as it seems incomplete/invalid */
 }
+
 h1, h3 {
+    font-family: 'Playfair Display', serif;
     text-align: center;
-    color: #2c3e50;
+    color: #5a4032; /* Slightly darker brown */
+    font-weight: 700;
 }
-.input-container {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
+
+h1 {
+    font-size: 2.5rem;
     margin-bottom: 20px;
 }
-input, button {
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+
+h3 {
+    font-size: 1.75rem;
 }
+
+.input-container {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+input, button {
+    padding: 12px;
+    font-size: 1rem;
+    border: 1px solid #e0d8cf; /* Subtle beige border */
+    border-radius: 5px;
+    font-family: 'Roboto', sans-serif;
+}
+
+input {
+    background-color: #fff;
+    color: #3a2e2e;
+}
+
 button {
-    background-color: #3498db;
-    color: white;
+    background-color: #5a4032; /* Earthy brown button */
+    color: #fff;
     cursor: pointer;
     border: none;
+    transition: background-color 0.3s ease;
 }
+
 button:hover {
-    background-color: #2980b9;
+    background-color: #4a3326; /* Darker brown on hover */
 }
+
 #output {
-    background: white;
+    background: #fff;
     padding: 20px;
     border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
+
 #output li {
-    margin: 10px 0;
+    margin: 12px 0;
+    font-size: 1.1rem;
+    color: #3a2e2e;
 }
+
 .explanation {
     text-align: center;
-    font-size: 16px;
-    margin: 20px 0;
-    color: #555;
+    font-size: 1rem;
+    margin: 30px 0;
+    color: #6a4e3e; /* Softer brown for secondary text */
+    font-family: 'Roboto', sans-serif;
 }
+
 .save-area {
-    margin-top: 20px;
+    margin-top: 30px;
     text-align: center;
 }
+
 #savedPrompts {
     width: 100%;
     max-width: 600px;
-    padding: 10px;
-    border: 1px solid #ddd;
+    padding: 12px;
+    border: 1px solid #e0d8cf;
     border-radius: 5px;
-    font-family: 'Arial', sans-serif;
-    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
+    background-color: #fff;
+    color: #3a2e2e;
+    resize: vertical; /* Allows vertical resizing */
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+    }
+
+    .input-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    input, button {
+        width: 100%;
+    }
+
+    #output li {
+        font-size: 1rem;
+    }
 }
